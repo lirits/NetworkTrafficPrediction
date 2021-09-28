@@ -11,7 +11,7 @@ def sliding_windows(time_values,data_values,windows_size,target_size,start_index
     return X, y
 
 def preprocessing(data_frame,CellName):
-    data_frame = data_frame[data_frame['CellName'] == CellName]
+    data_frame = data_frame[data_frame['CellName'] == CellName].copy()
     data_frame.loc[:, 'Date'] = pd.to_datetime(data_frame.Date.astype(str))
     data_frame.loc[:, 'Hour'] = pd.to_timedelta(data_frame.Hour, unit='h')
     data_frame.loc[:, 'Date_time'] = pd.to_datetime(data_frame.Date + data_frame.Hour)
