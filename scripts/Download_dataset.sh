@@ -1,0 +1,2 @@
+## this dataset is using from https://www.kaggle.com/naebolo/predict-traffic-of-lte-network?select=test.csv
+mkdir -p ../dataset/LteTraffic/  && gdown --id '18WeCp7OPGulOgMl-KN6DN1CJw47IlTQ2' --output ../dataset/LteTraffic/lte.train.csv
