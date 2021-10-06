@@ -1,4 +1,5 @@
 import pandas as pd
+import torch
 
 
 def sliding_windows(
@@ -40,6 +41,41 @@ def compute_dim(windows_size,padding,kernel_size,stride):
     :return:
     """
     return int(((windows_size + 2 * padding - 1*(kernel_size-1) -1)/stride)+1)
+
+
+def train_loop(datalodaer, model, loss_fn, optimizer,device):
+    size = len(datalodaer.dataset)
+    for batch, (X, y) in enumerate(datalodaer):
+        X, y = X.to(device), y.to(device)
+        # compute prediction and loss
+        pred = model(X)
+        loss = torch.sqrt(loss_fn(pred, y))
+        # Backpropagation
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        if batch % 100 == 0:
+            loss, current = loss.item(), batch * len(X)
+            print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+
+
+def test_loop(dataloader, model, loss_fn,device):
+    size = len(dataloader.dataset)
+    num_batch = len(dataloader)
+    test_loss = 0
+
+    with torch.no_grad():
+        for X, y in dataloader:
+            X, y = X.to(device), y.to(device)
+            pred = model(X)
+            test_loss += torch.sqrt(loss_fn(pred, y)).item()
+
+    test_loss /= num_batch
+
+    print(f"Test Error: \n  Avg Mse loss: {test_loss:>8f} \n")
+
+    return test_loss
 
 
 if __name__ == '__main__':
