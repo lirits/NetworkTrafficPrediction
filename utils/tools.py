@@ -30,6 +30,17 @@ def preprocessing(data_frame, CellName):
     data_frame = data_frame.sort_values(by='Date_time')
     return data_frame
 
+def compute_dim(windows_size,padding,kernel_size,stride):
+    """
+    compute convolutional dimension
+    :param windows_size:
+    :param padding:
+    :param kernel_size:
+    :param stride:
+    :return:
+    """
+    return int(((windows_size + 2 * padding - 1*(kernel_size-1) -1)/stride)+1)
+
 
 if __name__ == '__main__':
     import numpy as np
