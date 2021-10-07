@@ -6,9 +6,9 @@ from torch import Tensor
 # input_shape:[batch,windows_size,values]
 
 
-class Transformer(nn.Module):
+class TransformerModule(nn.Module):
     def __init__(self,input_dim,output_dim,embed_dim,nhead,dim_hid,num_encoder,num_decoder,dropout):
-        super(Transformer,self).__init__()
+        super(TransformerModule,self).__init__()
         self.embed_dim = embed_dim
         self.output_dim = output_dim
         self.encoder_embedding = ValueEmbedding(input_dim,embed_dim,'encoder')
@@ -40,7 +40,7 @@ class ValueEmbedding(nn.Module):
         self.embedding = nn.Linear(input_dim,embed_dim)
 
     def forward(self,x):
-        if self.coder is 'decoder':
+        if self.coder == 'decoder':
             x = x[:, :self.seq_decoder, :]
         x = self.embedding(x)
         return x

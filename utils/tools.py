@@ -77,8 +77,6 @@ def test_loop(dataloader, model, loss_fn,device):
 
     print(f"Test Error: \n  Avg Mse loss: {test_loss:>8f} \n")
 
-    return test_loss
-
 
 if __name__ == '__main__':
     import numpy as np

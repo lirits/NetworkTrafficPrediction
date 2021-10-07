@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class LSTMNetwork(nn.Module):
+class LSTMModule(nn.Module):
     def __init__(
         self,
         window_size,
@@ -13,7 +13,7 @@ class LSTMNetwork(nn.Module):
         hidden_size=20,
         num_lstm=1,
             device='cpu'):
-        super(LSTMNetwork, self).__init__()
+        super(LSTMModule, self).__init__()
         self.LSTM = nn.LSTM(input_feature, hidden_size, num_lstm)
         self.hidden_memory, self.cell_memory = torch.zeros(
             num_lstm, batch_size, hidden_size).to(device), torch.zeros(
@@ -39,6 +39,6 @@ class LSTMNetwork(nn.Module):
 
 if __name__ == '__main__':
     input = torch.randn(64, 12, 1)
-    net = LSTMNetwork(window_size=12)
+    net = LSTMModule(window_size=12)
     out = net(input)
     print(out.shape)

@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 
 
-class DNNetwork(nn.Module):
+class DNNModule(nn.Module):
     def __init__(self, windows_size, target_size):
-        super(DNNetwork, self).__init__()
+        super(DNNModule, self).__init__()
         self.windows_size = windows_size
         self.linear_stack = nn.Sequential(
             nn.Linear(self.windows_size, 512),
