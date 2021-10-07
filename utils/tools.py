@@ -17,6 +17,8 @@ def sliding_windows(
                              windows_size +
                              target_size])
         start_index += 1
+        if len(time_values) - start_index < windows_size or len(time_values) - start_index-windows_size<target_size:
+          break
     return X, y
 
 
