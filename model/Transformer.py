@@ -6,11 +6,12 @@ from torch import Tensor
 # input_shape:[batch,windows_size,values]
 
 
-class TransformerModule(nn.Module):
-    def __init__(self,input_dim,output_dim,embed_dim,nhead,dim_hid,num_encoder,num_decoder,dropout):
-        super(TransformerModule,self).__init__()
+class Transformer(nn.Module):
+    def __init__(self,input_dim,output_dim,embed_dim,nhead,dim_hid,num_encoder,num_decoder,dropout,pred_size):
+        super(Transformer,self).__init__()
         self.embed_dim = embed_dim
         self.output_dim = output_dim
+        self.pred_size = pred_size
         self.encoder_embedding = ValueEmbedding(input_dim,embed_dim,'encoder')
         self.decoder_embedding = ValueEmbedding(input_dim,embed_dim,'decoder',seq_decoder=output_dim)
         self.pos_embedding = PositionalEncoding(embed_dim)
@@ -18,7 +19,7 @@ class TransformerModule(nn.Module):
         self.Encoder = nn.TransformerEncoder(encoder_layers,num_layers=num_encoder)
         decoder_layers = nn.TransformerDecoderLayer(d_model=embed_dim,nhead=nhead,dim_feedforward=dim_hid,dropout=dropout)
         self.Decoder =nn.TransformerDecoder(decoder_layers,num_decoder)
-        self.fc1 = nn.Linear(embed_dim*output_dim,1)
+        self.fc1 = nn.Linear(embed_dim*output_dim,pred_size)
 
 
 
@@ -27,7 +28,7 @@ class TransformerModule(nn.Module):
         x_decoder = self.pos_embedding(self.decoder_embedding(x).transpose(0,1))
         out_encoder = self.Encoder(x_encoder)
         out_decoder = self.Decoder(x_decoder,out_encoder)
-        out = self.fc1(out_decoder.transpose(0,1).reshape(-1,self.embed_dim*self.output_dim))
+        out = self.fc1(out_decoder.transpose(0,1).reshape(-1,self.embed_dim*self.output_dim)).unsqueeze(-1)
         return out
 
 
