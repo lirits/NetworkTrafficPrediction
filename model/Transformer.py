@@ -6,9 +6,9 @@ from torch import Tensor
 # input_shape:[batch,windows_size,values]
 
 
-class Transformer(nn.Module):
+class TransformerModule(nn.Module):
     def __init__(self,input_dim,output_dim,embed_dim,nhead,dim_hid,num_encoder,num_decoder,dropout,pred_size):
-        super(Transformer,self).__init__()
+        super(TransformerModule,self).__init__()
         self.embed_dim = embed_dim
         self.output_dim = output_dim
         self.pred_size = pred_size
