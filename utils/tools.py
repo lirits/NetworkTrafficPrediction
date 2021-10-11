@@ -79,8 +79,11 @@ def test_loop(dataloader, model, loss_fn,device):
 
 
 if __name__ == '__main__':
-    import numpy as np
-    x = np.arange(100)
-    X, y = sliding_windows(x, x, 12, 1)
-    print('Test-sliding-windows-function')
-    print(len(X), '\n', X[0], y[0], '\n', X[1], y[1])
+    # import numpy as np
+    # x = np.arange(100)
+    # X, y = sliding_windows(x, x, 12, 1)
+    # print('Test-sliding-windows-function')
+    # print(len(X), '\n', X[0], y[0], '\n', X[1], y[1])
+    y_pred = torch.rand(64,1,1)
+    y_true = torch.rand(64,1,1)
+    print(blur_accuracy(y_pred,y_true,0.1))

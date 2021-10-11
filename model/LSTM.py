@@ -5,16 +5,18 @@ import torch.nn.functional as F
 
 class LSTMModule(nn.Module):
     def __init__(
-        self,
-        window_size,
-        input_feature=1,
-        target_size=1,
-        batch_size=64,
-        hidden_size=20,
-        num_lstm=1,
-            device='cpu'):
+            self,
+            window_size: int,
+            input_feature: int = 1,
+            target_size: int = 1,
+            batch_size: int = 64,
+            hidden_size: int = 20,
+            num_lstm: int = 1,
+            device: str = 'cpu',
+            dropout: float = 0,
+            bidirectional:bool = False):
         super(LSTMModule, self).__init__()
-        self.LSTM = nn.LSTM(input_feature, hidden_size, num_lstm)
+        self.LSTM = nn.LSTM(input_feature, hidden_size, num_lstm,dropout=dropout,bidirectional=bidirectional)
         self.hidden_memory, self.cell_memory = torch.zeros(
             num_lstm, batch_size, hidden_size).to(device), torch.zeros(
             num_lstm, batch_size, hidden_size).to(device)
