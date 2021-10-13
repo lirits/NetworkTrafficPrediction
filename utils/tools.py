@@ -17,8 +17,9 @@ def sliding_windows(
                              windows_size +
                              target_size])
         start_index += 1
-        if len(time_values) - start_index < windows_size or len(time_values) - start_index-windows_size<target_size:
-          break
+        if len(time_values) - start_index < windows_size or len(time_values) - \
+                start_index - windows_size < target_size:
+            break
     return X, y
 
 
@@ -33,7 +34,8 @@ def preprocessing(data_frame, CellName):
     data_frame = data_frame.sort_values(by='Date_time')
     return data_frame
 
-def compute_dim(windows_size,padding,kernel_size,stride):
+
+def compute_dim(windows_size, padding, kernel_size, stride):
     """
     compute convolutional dimension
     :param windows_size:
@@ -42,10 +44,11 @@ def compute_dim(windows_size,padding,kernel_size,stride):
     :param stride:
     :return:
     """
-    return int(((windows_size + 2 * padding - 1*(kernel_size-1) -1)/stride)+1)
+    return int(((windows_size + 2 * padding - 1 *
+               (kernel_size - 1) - 1) / stride) + 1)
 
 
-def train_loop(datalodaer, model, loss_fn, optimizer,device):
+def train_loop(datalodaer, model, loss_fn, optimizer, device):
     size = len(datalodaer.dataset)
     for batch, (X, y) in enumerate(datalodaer):
         X, y = X.to(device), y.to(device)
@@ -62,7 +65,7 @@ def train_loop(datalodaer, model, loss_fn, optimizer,device):
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
 
-def test_loop(dataloader, model, loss_fn,device):
+def test_loop(dataloader, model, loss_fn, device):
     size = len(dataloader.dataset)
     num_batch = len(dataloader)
     test_loss = 0
@@ -78,12 +81,16 @@ def test_loop(dataloader, model, loss_fn,device):
     print(f"Test Error: \n  Avg Mse loss: {test_loss:>8f} \n")
 
 
+def Tr_accuracy(y_pred: float, y_true: float, tolerate_rate: int) -> float:
+    return ((y_true *(1-tolerate_rate) < y_pred) == (y_pred < (1+tolerate_rate) * y_true)).sum() / (y_pred.shape[0]* y_pred.shape[1]*y_pred.shape[2])
+
+
 if __name__ == '__main__':
     # import numpy as np
     # x = np.arange(100)
     # X, y = sliding_windows(x, x, 12, 1)
     # print('Test-sliding-windows-function')
     # print(len(X), '\n', X[0], y[0], '\n', X[1], y[1])
-    y_pred = torch.rand(64,1,1)
-    y_true = torch.rand(64,1,1)
-    print(blur_accuracy(y_pred,y_true,0.1))
+    y_pred = torch.rand(64, 24, 1)
+    y_true = torch.rand(64, 24, 1)
+    print(Tr_accuracy(y_pred, y_true, 0.1))

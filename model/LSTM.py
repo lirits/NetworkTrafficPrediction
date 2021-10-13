@@ -29,18 +29,21 @@ class LSTMModule(nn.Module):
     def forward(self, x):
         output, (_, _) = self.LSTM(x.transpose(0, 1),
                                    (self.hidden_memory, self.cell_memory))
-        output = self.linear2(
+        result = self.linear2(
             F.relu(
                 self.linear1(
                     self.flatten(
                         output.transpose(
                             0,
                             1)))))
-        return output
+        return result.unsqueeze(-1)
 
 
 if __name__ == '__main__':
-    input = torch.randn(64, 12, 1)
-    net = LSTMModule(window_size=12)
+    windows_size = 120
+    target_size = 12
+    input = torch.randn(64, windows_size, 1)
+    net = LSTMModule(windows_size, 1, 48 ,64, 200, 2)
     out = net(input)
+    print(net)
     print(out.shape)
