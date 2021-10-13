@@ -11,8 +11,8 @@ class LteTrafficDataset(Dataset):
             CellName: str,
             windows_size: int,
             target_size: int,
-            transform=None,
-            target_transform=None):
+            transform: bool = True,
+            target_transform: bool = True):
         self.df = pd.read_csv(file_path)
         self.CellName = CellName
         self.transform = transform
