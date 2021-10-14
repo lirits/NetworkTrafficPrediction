@@ -4,7 +4,7 @@
 - ## Model Task
 - [x] DNN
 - [x] CNN1d
-- [xRNN(simple)
+- [x] RNN(simple)
 - [x] LSTM
 - [x] GRU(simple)
 - [x] Transformer
