@@ -4,9 +4,9 @@
 - ## Model Task
 - [x] DNN
 - [x] CNN1d
-- [ ] RNN
+- [xRNN(simple)
 - [x] LSTM
-- [ ] GRU
+- [x] GRU(simple)
 - [x] Transformer
 - ## Code supplement
 - [ ] Model save

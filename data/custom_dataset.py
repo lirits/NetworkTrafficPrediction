@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
-from NetworkTrafficPrediction.utils.tools import sliding_windows, preprocessing
+from utils.tools import sliding_windows, preprocessing
 
 
 class LteTrafficDataset(Dataset):
