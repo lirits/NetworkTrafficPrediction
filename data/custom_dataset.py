@@ -2,6 +2,8 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
 from utils.tools import sliding_windows, preprocessing
+from torch.utils.data.sampler import SubsetRandomSampler
+import numpy as np
 
 
 class LteTrafficDataset(Dataset):
@@ -36,6 +38,35 @@ class LteTrafficDataset(Dataset):
             pred_value = torch.tensor(
                 pred_value, dtype=torch.float32) / self.dataframe.values.max()
         return history_value, pred_value
+
+
+def LteTrafficDataloader(file_path: str,
+                         CellName: str,
+                         windows_size: int,
+                         target_size: int,
+                         transform: bool = True,
+                         target_transform: bool = True,
+                         split_rate: float = 0.2,
+                         batch_size: int = 64,
+                         drop_last: bool = True):
+    dataset = LteTrafficDataset(file_path, CellName, windows_size,
+                                target_size, transform, target_transform)
+    dataset_size = len(dataset)
+    indices = list(range(dataset_size))
+    split = int(np.floor(split_rate * dataset_size))
+    train_indices, val_indices = indices[split:], indices[:split]
+    train_loader = torch.utils.data.DataLoader(
+        dataset,
+        batch_size=batch_size,
+        drop_last=drop_last,
+        sampler=SubsetRandomSampler(train_indices))
+    validation_loader = torch.utils.data.DataLoader(
+        dataset,
+        batch_size=batch_size,
+        drop_last=drop_last,
+        sampler=SubsetRandomSampler(val_indices))
+
+    return train_loader, validation_loader
 
 
 if __name__ == '__main__':

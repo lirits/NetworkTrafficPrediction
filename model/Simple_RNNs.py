@@ -40,7 +40,7 @@ class LSTMModule(nn.Module):
     def forward(self, x):
         output_rnn,_ = self.RNNS_model(x.transpose(0,1))
         output = self.linear_model(self.fc1(output_rnn.transpose(0,1)))
-        return output
+        return output.unsqueeze(-1)
 
 
 if __name__ == '__main__':
