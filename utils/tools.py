@@ -1,6 +1,5 @@
 import pandas as pd
 import torch
-import wandb
 
 
 def sliding_windows(
@@ -56,7 +55,8 @@ def train_loop(
         optimizer,
         device,
         usd_wandb: bool = False,
-        use_Tr_accuracy: bool = False):
+        use_Tr_accuracy: bool = False,
+        tolerate_rate:float = 0.1):
     size = len(datalodaer.dataset)
     accuracy = 0
     for batch, (X, y) in enumerate(datalodaer):
@@ -70,11 +70,12 @@ def train_loop(
         loss.backward()
         optimizer.step()
         if use_Tr_accuracy:
-            accuracy += Tr_accuracy(pred, y)
+            accuracy += Tr_accuracy(pred, y,tolerate_rate)
 
         if batch % 100 == 0:
             loss, current = loss.item(), batch * len(X)
             if usd_wandb:
+                import wandb
                 wandb.log({'train_loss': loss.item(), 'Tr_accuracy': accuracy})
             print(
                 f"loss: {loss:>7f},Accuracy:{(accuracy/batch)}  [{current:>5d}/{size:>5d}]")
@@ -92,6 +93,7 @@ def test_loop(dataloader, model, loss_fn, device, usd_wandb: bool = False):
 
     test_loss /= num_batch
     if usd_wandb:
+        import wandb
         wandb.log({'test_loss': test_loss.item()})
     print(f"Test Error: \n  Avg Mse loss: {test_loss:>8f} \n")
 
