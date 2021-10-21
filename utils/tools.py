@@ -50,16 +50,14 @@ def compute_dim(windows_size, padding, kernel_size, stride):
 
 
 def train_loop(
-        datalodaer,
+        loader,
         model,
         loss_fn,
         optimizer,
         device,
-        usd_wandb: bool = False,
-        use_Tr_accuracy: bool = False):
-    size = len(datalodaer.dataset)
-    accuracy = 0
-    for batch, (X, y) in enumerate(datalodaer):
+        usd_wandb: bool = False):
+    # size = len(datalodaer.dataset)
+    for batch, (X, y) in enumerate(loader):
         X, y = X.to(device), y.to(device)
         # compute prediction and loss
         pred = model(X)
@@ -69,31 +67,32 @@ def train_loop(
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        if use_Tr_accuracy:
-            accuracy += Tr_accuracy(pred, y)
 
         if batch % 100 == 0:
             loss, current = loss.item(), batch * len(X)
             if usd_wandb:
-                wandb.log({'train_loss': loss.item(), 'Tr_accuracy': accuracy})
+                wandb.log({'train_loss': loss.item()})
             print(
-                f"loss: {loss:>7f},Accuracy:{(accuracy/batch)}  [{current:>5d}/{size:>5d}]")
+                f"loss: {loss:>7f}") #,[{current:>5d}/{size:>5d}]
 
 
-def test_loop(dataloader, model, loss_fn, device, usd_wandb: bool = False):
+def test_loop(dataloader, model, loss_fn, device, usd_wandb: bool = False,Tr_rate:float = 0):
     num_batch = len(dataloader)
     test_loss = 0
+    acc = 0
 
     with torch.no_grad():
         for X, y in dataloader:
             X, y = X.to(device), y.to(device)
             pred = model(X)
             test_loss += torch.sqrt(loss_fn(pred, y)).item()
+            if Tr_rate != 0:
+                acc  += Tr_accuracy(pred,y,Tr_rate)
 
     test_loss /= num_batch
     if usd_wandb:
-        wandb.log({'test_loss': test_loss.item()})
-    print(f"Test Error: \n  Avg Mse loss: {test_loss:>8f} \n")
+        wandb.log({'test_loss': test_loss.item(),'Tr_accuracy': acc/num_batch })
+    print(f"Test Error: \n  Avg Mse loss: {test_loss:>8f} \n Tr Acc : {acc/num_batch} \n")
 
 
 def Tr_accuracy(y_pred: float, y_true: float, tolerate_rate: int) -> float:
@@ -126,7 +125,8 @@ if __name__ == '__main__':
     # X, y = sliding_windows(x, x, 12, 1)
     # print('Test-sliding-windows-function')
     # print(len(X), '\n', X[0], y[0], '\n', X[1], y[1])
-    y_pred = torch.rand(64, 24, 1)
+    # y_pred = torch.rand(64, 24, 1)
     y_true = torch.rand(64, 24, 1)
-    # print(Tr_accuracy(y_pred, y_true, 0.1))
-    print(y_pred[:,-1,0])
+    # # print(Tr_accuracy(y_pred, y_true, 0.1))
+    # print(y_pred[:,-1,0])
+
