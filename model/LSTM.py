@@ -14,9 +14,14 @@ class LSTMModule(nn.Module):
             num_lstm: int = 1,
             device: str = 'cpu',
             dropout: float = 0,
-            bidirectional:bool = False):
+            bidirectional: bool = False):
         super(LSTMModule, self).__init__()
-        self.LSTM = nn.LSTM(input_feature, hidden_size, num_lstm,dropout=dropout,bidirectional=bidirectional)
+        self.LSTM = nn.LSTM(
+            input_feature,
+            hidden_size,
+            num_lstm,
+            dropout=dropout,
+            bidirectional=bidirectional)
         self.hidden_memory, self.cell_memory = torch.zeros(
             num_lstm, batch_size, hidden_size).to(device), torch.zeros(
             num_lstm, batch_size, hidden_size).to(device)
@@ -43,7 +48,7 @@ if __name__ == '__main__':
     windows_size = 120
     target_size = 12
     input = torch.randn(64, windows_size, 1)
-    net = LSTMModule(windows_size, 1, 48 ,64, 200, 2)
+    net = LSTMModule(windows_size, 1, 48, 64, 200, 2)
     out = net(input)
     print(net)
     print(out.shape)
