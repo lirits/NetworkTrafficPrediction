@@ -1,6 +1,5 @@
 import pandas as pd
 import torch
-import wandb
 
 
 def sliding_windows(
@@ -71,6 +70,7 @@ def train_loop(
         if batch % 100 == 0:
             loss, current = loss.item(), batch * len(X)
             if usd_wandb:
+                import wandb
                 wandb.log({'train_loss': loss.item()})
             print(
                 f"loss: {loss:>7f}")  # ,[{current:>5d}/{size:>5d}]
@@ -97,6 +97,7 @@ def test_loop(
 
     test_loss /= num_batch
     if usd_wandb:
+        import wandb
         wandb.log({'test_loss': test_loss.item(),
                   'Tr_accuracy': acc / num_batch})
     print(
@@ -135,16 +136,17 @@ def train_test_model(
 
             if batch % 100 == 0 or batch == len(train_loader):
                 print(
-                    f'Epochs:{epochs}\nMSE loss{loss.item()}    [{batch}/ {len(train_loader)}] \n')
+                    f'Epochs:{t} / {epochs}: \nMSE loss{loss.item()}    [{batch}/ {len(train_loader)}] \n')
 
         net.eval()
         with torch.no_grad():
-            for X, y in test_loader:
-                pred = net(X.to(device))
-                loss2 = test_loss_fn(pred, y.to(device))
+            for X2, y2 in test_loader:
+                X2,y2 = X2.to(device),y2.to(device)
+                pred = net(X2)
+                loss2 = test_loss_fn(pred, y2)
                 test_loss += loss2.item()
                 if Tr_rate != 0:
-                    test_acc += Tr_accuracy(pred, y, Tr_rate)
+                    test_acc += Tr_accuracy(pred, y2, Tr_rate)
 
         current_loss = test_loss / len(test_loader)
         current_acc = test_acc / len(test_loader)
