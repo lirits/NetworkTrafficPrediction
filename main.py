@@ -8,7 +8,7 @@ warnings.filterwarnings('ignore')
 
 # global args
 date_config = {
-    'file_path': 'NetworkTrafficPrediction/data/dataset/lte.train.csv',
+    'file_path': 'dataset/LteTraffic/lte.train.csv',
     'CellName': 'Cell_003781',
     'batch_size': 64,
     'windows_size': 128,
@@ -34,7 +34,8 @@ transform_config = {
     'num_decoder': 1,
     'dropout': 0.05,
     'activation': 'gelu',
-    'Tr_rate': 0.2}
+    'Tr_rate': 0.2,
+    'pred_size': 32}
 
 
 def load_model(moid, config_file, device):
@@ -43,16 +44,16 @@ def load_model(moid, config_file, device):
         from model.Transformer import TransformerModule
 
         net = TransformerModule(
-            config_file.input_dim,
-            config_file.output_dim,
-            config_file.embed_dim,
-            config_file.nhead,
-            config_file.dim_hid,
-            config_file.num_encoder,
-            config_file.num_decoder,
-            config_file.dropout,
-            config_file.target_size,
-            config_file.activation).to(device)
+            config_file['input_dim'],
+            config_file['output_dim'],
+            config_file['embed_dim'],
+            config_file['nhead'],
+            config_file['dim_hid'],
+            config_file['num_encoder'],
+            config_file['num_decoder'],
+            config_file['dropout'],
+            config_file['pred_size'],
+            config_file['activation']).to(device)
 
     return net
 
@@ -61,16 +62,16 @@ def main(
         moid,
         data_config,
         model_config):
-    train_loader, validation_loader = LteTrafficDataloader(data_config.file_path, data_config.CellName, data_config.windows_size,
-                                                           data_config.target_size, data_config.transform, data_config.target_transform, data_config.validation_split, data_config.batch_size)
-    net = load_model(moid, model_config, data_config.device)
+    train_loader, validation_loader = LteTrafficDataloader(data_config['file_path'], data_config['CellName'], data_config['windows_size'], data_config[
+                                                           'target_size'], data_config['transform'], data_config['target_transform'], data_config['validation_split'], data_config['batch_size'])
+    net = load_model(moid, model_config, data_config['device'])
     optimizer = torch.optim.Adam(
         net.parameters(),
-        lr=data_config.learning_rate)
+        lr=data_config['learning_rate'])
     train_loss_fn = nn.L1Loss()
     valid_loss_fn = nn.MSELoss()
-    model, train_loss, valid_loss, valid_acc = train_model(train_loader, validation_loader, net, optimizer, train_loss_fn,
-                                                           valid_loss_fn, data_config.device, data_config.epochs, data_config.patience, data_config.use_acc, data_config.tr_rate)
+    model, train_loss, valid_loss, valid_acc = train_model(train_loader, validation_loader, net, optimizer, train_loss_fn, valid_loss_fn,
+                                                           data_config['device'], data_config['epochs'], data_config['patience'], data_config['use_acc'], data_config['tr_rate'])
     return model, train_loss, valid_loss, valid_acc
 
 
