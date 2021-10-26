@@ -166,7 +166,7 @@ def train_model(train_loader,
             # forward pass: compute predicted outputs by passing inputs to the model
             output = net(X2)
             # calculate the loss
-            loss = test_loss_fn(output, y2)
+            loss = torch.sqrt(test_loss_fn(output, y2))
             # record validation loss
             valid_losses.append(loss.item())
             if use_acc:
@@ -208,7 +208,7 @@ def train_model(train_loader,
     # load the last checkpoint with the best model
     net.load_state_dict(torch.load('checkpoint.pt'))
 
-    return net, avg_train_losses, avg_valid_losses
+    return net, avg_train_losses, avg_valid_losses,avg_valid_acc
 
 
 def preprocess_prediction(net, dataloader, device):
