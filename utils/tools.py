@@ -118,7 +118,9 @@ def train_model(train_loader,
                 test_loss_fn,
                 device,
                 n_epochs,
-                patience):
+                patience,
+                use_acc:bool=False,
+                Tr_rate:float=0.2):
     # to track the training loss as the model trains
     train_losses = []
     # to track the validation loss as the model trains
@@ -127,6 +129,9 @@ def train_model(train_loader,
     avg_train_losses = []
     # to track the average validation loss per epoch as the model trains
     avg_valid_losses = []
+    if use_acc:
+        valid_acc = []
+        avg_valid_acc = []
 
     # initialize the early_stopping object
     early_stopping = EarlyStopping(patience=patience, verbose=True)
@@ -164,6 +169,10 @@ def train_model(train_loader,
             loss = test_loss_fn(output, y2)
             # record validation loss
             valid_losses.append(loss.item())
+            if use_acc:
+                acc = Tr_accuracy(output, y2,Tr_rate)
+                valid_acc.append(acc)
+
 
         # print training/validation statistics
         # calculate average loss over an epoch
@@ -171,6 +180,8 @@ def train_model(train_loader,
         valid_loss = np.average(valid_losses)
         avg_train_losses.append(train_loss)
         avg_valid_losses.append(valid_loss)
+        if use_acc:
+            avg_valid_acc.append(valid_acc)
 
         epoch_len = len(str(n_epochs))
 
@@ -179,6 +190,8 @@ def train_model(train_loader,
                      f'valid_loss: {valid_loss:.5f}')
 
         print(print_msg)
+        if use_acc:
+            print(f'{Tr_rate*10}% ACC:{valid_acc:.5f}')
 
         # clear lists to track next epoch
         train_losses = []
