@@ -24,7 +24,7 @@ date_config = {
     'tr_rate': 0.2
 }
 
-transform_config = {
+transformer_config = {
     'input_dim': 1,
     'output_dim': 12,  # input_size of decoder
     'embed_dim': 1024,  # ValueEmbedding
@@ -34,7 +34,6 @@ transform_config = {
     'num_decoder': 1,
     'dropout': 0.05,
     'activation': 'gelu',
-    'Tr_rate': 0.2,
     'pred_size': 32}
 
 
@@ -77,4 +76,4 @@ def main(
 
 if __name__ == '__main__':
     model, train_loss, valid_loss, valid_acc = main(
-        'transformer', date_config, transform_config)
+        'transformer', date_config, transformer_config)

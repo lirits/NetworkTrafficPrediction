@@ -178,10 +178,11 @@ def train_model(train_loader,
         # calculate average loss over an epoch
         train_loss = np.average(train_losses)
         valid_loss = np.average(valid_losses)
+        valid_accuracy = np.average(valid_acc)
         avg_train_losses.append(train_loss)
         avg_valid_losses.append(valid_loss)
         if use_acc:
-            avg_valid_acc.append(valid_acc)
+            avg_valid_acc.append(valid_accuracy)
 
         epoch_len = len(str(n_epochs))
 
@@ -191,11 +192,12 @@ def train_model(train_loader,
 
         print(print_msg)
         if use_acc:
-            print(f'{Tr_rate*10}% ACC:{valid_acc:.5f}')
+            print(f'{Tr_rate*100}% ACC:{valid_accuracy:.5f}')
 
         # clear lists to track next epoch
         train_losses = []
         valid_losses = []
+        valid_acc = []
 
         # early_stopping needs the validation loss to check if it has decresed,
         # and if it has, it will make a checkpoint of the current model
