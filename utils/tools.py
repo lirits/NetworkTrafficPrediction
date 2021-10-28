@@ -109,7 +109,10 @@ def Tr_accuracy(y_pred: float, y_true: float, tolerate_rate: int) -> float:
     return ((y_true * (1 - tolerate_rate) < y_pred) == (y_pred < (1 + tolerate_rate)
             * y_true)).sum() / (y_pred.shape[0] * y_pred.shape[1] * y_pred.shape[2])
 
-# copyright @ https://github.com/Bjarten/early-stopping-pytorch/blob/master/MNIST_Early_Stopping_example.ipynb
+# copyright @
+# https://github.com/Bjarten/early-stopping-pytorch/blob/master/MNIST_Early_Stopping_example.ipynb
+
+
 def train_model(train_loader,
                 valid_loader,
                 net,
@@ -119,8 +122,8 @@ def train_model(train_loader,
                 device,
                 n_epochs,
                 patience,
-                use_acc:bool=False,
-                Tr_rate:float=0.2):
+                use_acc: bool = False,
+                Tr_rate: float = 0.2):
     # to track the training loss as the model trains
     train_losses = []
     # to track the validation loss as the model trains
@@ -143,14 +146,16 @@ def train_model(train_loader,
         ###################
         net.train()  # prep model for training
         for batch, (X, y) in enumerate(train_loader, 1):
-            X,y = X.to(device),y.to(device)
+            X, y = X.to(device), y.to(device)
             # clear the gradients of all optimized variables
             optimizer.zero_grad()
-            # forward pass: compute predicted outputs by passing inputs to the model
+            # forward pass: compute predicted outputs by passing inputs to the
+            # model
             output = net(X)
             # calculate the loss
             loss = train_loss_fn(output, y)
-            # backward pass: compute gradient of the loss with respect to model parameters
+            # backward pass: compute gradient of the loss with respect to model
+            # parameters
             loss.backward()
             # perform a single optimization step (parameter update)
             optimizer.step()
@@ -162,17 +167,17 @@ def train_model(train_loader,
         ######################
         net.eval()  # prep model for evaluation
         for X2, y2 in valid_loader:
-            X2,y2 = X2.to(device),y2.to(device)
-            # forward pass: compute predicted outputs by passing inputs to the model
+            X2, y2 = X2.to(device), y2.to(device)
+            # forward pass: compute predicted outputs by passing inputs to the
+            # model
             output = net(X2)
             # calculate the loss
             loss = torch.sqrt(test_loss_fn(output, y2))
             # record validation loss
             valid_losses.append(loss.item())
             if use_acc:
-                acc = Tr_accuracy(output, y2,Tr_rate)
+                acc = Tr_accuracy(output, y2, Tr_rate)
                 valid_acc.append(acc)
-
 
         # print training/validation statistics
         # calculate average loss over an epoch
@@ -210,7 +215,7 @@ def train_model(train_loader,
     # load the last checkpoint with the best model
     net.load_state_dict(torch.load('checkpoint.pt'))
 
-    return net, avg_train_losses, avg_valid_losses,avg_valid_acc
+    return net, avg_train_losses, avg_valid_losses, avg_valid_acc
 
 
 def preprocess_prediction(net, dataloader, device):
@@ -226,9 +231,18 @@ def preprocess_prediction(net, dataloader, device):
     return Y, Y_pred
 
 # copyright @ https://github.com/Bjarten/early-stopping-pytorch
+
+
 class EarlyStopping:
     """Early stops the training if validation loss doesn't improve after a given patience."""
-    def __init__(self, patience=7, verbose=False, delta=0, path='checkpoint.pt', trace_func=print):
+
+    def __init__(
+            self,
+            patience=7,
+            verbose=False,
+            delta=0,
+            path='checkpoint.pt',
+            trace_func=print):
         """
         Args:
             patience (int): How long to wait after last time validation loss improved.
@@ -251,6 +265,7 @@ class EarlyStopping:
         self.delta = delta
         self.path = path
         self.trace_func = trace_func
+
     def __call__(self, val_loss, model):
 
         score = -val_loss
@@ -260,7 +275,8 @@ class EarlyStopping:
             self.save_checkpoint(val_loss, model)
         elif score < self.best_score + self.delta:
             self.counter += 1
-            self.trace_func(f'EarlyStopping counter: {self.counter} out of {self.patience}')
+            self.trace_func(
+                f'EarlyStopping counter: {self.counter} out of {self.patience}')
             if self.counter >= self.patience:
                 self.early_stop = True
         else:
@@ -271,9 +287,11 @@ class EarlyStopping:
     def save_checkpoint(self, val_loss, model):
         '''Saves model when validation loss decrease.'''
         if self.verbose:
-            self.trace_func(f'Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ...')
+            self.trace_func(
+                f'Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ...')
         torch.save(model.state_dict(), self.path)
         self.val_loss_min = val_loss
+
 
 if __name__ == '__main__':
     # import numpy as np
