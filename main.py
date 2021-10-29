@@ -57,7 +57,7 @@ def load_model(moid, config_file, device):
     return net
 
 
-def main(
+def train(
         moid,
         data_config,
         model_config):

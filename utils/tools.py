@@ -177,7 +177,7 @@ def train_model(train_loader,
             valid_losses.append(loss.item())
             if use_acc:
                 acc = Tr_accuracy(output, y2, Tr_rate)
-                valid_acc.append(acc)
+                valid_acc.append(acc.item())
 
         # print training/validation statistics
         # calculate average loss over an epoch
