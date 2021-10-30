@@ -2,10 +2,10 @@ import torch
 import torch.nn as nn
 
 
-class LSTMModule(nn.Module):
+class RnnsModule(nn.Module):
     def __init__(
             self,
-            moid='RNN',
+            mode='RNN',
             window_size: int = 12,
             input_feature: int = 1,
             target_size: int = 1,
@@ -14,15 +14,15 @@ class LSTMModule(nn.Module):
             dropout: float = 0.01,
             bidirectional: bool = False):
         super(LSTMModule, self).__init__()
-        assert moid in ['RNN', 'LSTM', 'GRU']
-        if moid == 'LSTM':
+        assert mode in ['RNN', 'LSTM', 'GRU']
+        if mode == 'LSTM':
             self.RNNS_model = nn.Sequential(
                 nn.LSTM(
                     input_feature,
                     hidden_size,
                     num_lstm,
                     bidirectional=bidirectional))
-        elif moid == 'GRU':
+        elif mode == 'GRU':
             self.RNNS_model = nn.Sequential(
                 nn.GRU(
                     input_feature,
@@ -54,7 +54,7 @@ class LSTMModule(nn.Module):
 if __name__ == '__main__':
     windows_size = 120
     target_size = 12
-    moid = 'LSTM'
+    mode = 'LSTM'
     input = torch.randn(64, windows_size, 1)
     net = LSTMModule('LSTM', windows_size, 1, 48, 200, 3, 0.5)
     out = net(input)
