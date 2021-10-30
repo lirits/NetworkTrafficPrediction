@@ -126,16 +126,6 @@ def train(
     return model, train_loss, valid_loss, valid_acc, train_loader, validation_loader
 
 
-def train_wandb(mode,wandb_config):
-    train_loader, validation_loader = LteTrafficDataloader(wandb_config['data_args']['file_path'], wandb_config['data_args']['CellName'], wandb_config['parameters']['windows_size'], wandb_config['parameters'][
-                                                           'target_size'], wandb_config['data_args']['transform'], wandb_config['data_args']['target_transform'], wandb_config['data_args']['validation_split'], wandb_config['parameters']['batch_size'])
-    net = load_model(mode, wandb_config['parameters'], wandb_config['data_args']['device'])
-    optimizer, train_loss_fn, test_loss_fn = build_model(net, wandb_config['parameters'])
-    # 改train_model_wandb
-    model, train_loss, valid_loss, valid_acc = train_model_wandb(train_loader, validation_loader, net, optimizer, train_loss_fn, test_loss_fn,
-                                                           wandb_config['data_args']['device'], wandb_config['data_args']['epochs'], wandb_config['data_args']['patience'],  wandb_config['data_args']['tr_rate'])
-    return model, train_loss, valid_loss, valid_acc
-
 if __name__ == '__main__':
     model, train_loss, valid_loss, valid_acc, train_loader, validation_loader = train(
         'transformer', data_config, transformer_config)

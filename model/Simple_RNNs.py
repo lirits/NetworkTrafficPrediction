@@ -13,7 +13,7 @@ class RnnsModule(nn.Module):
             num_lstm: int = 1,
             dropout: float = 0.01,
             bidirectional: bool = False):
-        super(LSTMModule, self).__init__()
+        super(RnnsModule, self).__init__()
         assert mode in ['RNN', 'LSTM', 'GRU']
         if mode == 'LSTM':
             self.RNNS_model = nn.Sequential(
