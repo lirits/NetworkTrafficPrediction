@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from data.custom_dataset import LteTrafficDataloader
-from utils.tools import train_model,train_model_wandb
+from utils.tools import train_model
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -51,8 +51,8 @@ simple_Rnns_config = {
 
 
 def load_model(mode, model_config, device):
-    assert mode in ['transformer', 'lstm', 'rnn', 'gru']
-    if mode == 'transformer':
+    assert mode in ['Transformer', 'LSTM', 'RNN', 'GRU']
+    if mode == 'Transformer':
         from model.Transformer import TransformerModule
 
         net = TransformerModule(
@@ -86,8 +86,8 @@ def build_model(model, data_config):
     assert data_config['train_loss_fn'] in ['rmse', 'mae']
     assert data_config['test_loss_fn'] in ['rmse', 'mae']
     if data_config['optimizer'] == 'radam':
-        from utils.radam import Radam
-        optimizer = Radam(lr=data_config['learning_rate'])
+        from utils.radam import RAdam
+        optimizer = RAdam(lr=data_config['learning_rate'])
     elif data_config['optimizer'] == 'adamW':
         optimizer = torch.optim.AdamW(
             model.parameters(),
